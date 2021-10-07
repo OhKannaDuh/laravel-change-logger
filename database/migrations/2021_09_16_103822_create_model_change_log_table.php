@@ -14,12 +14,22 @@ final class CreateModelChangeLogTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('model_change_log', function (Blueprint $table) {
+        Schema::create(config('change-logger.table'), function (Blueprint $table) {
             $table->id();
             $table->string('model');
             $table->json('original');
             $table->json('changes');
             $table->timestamps();
         });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists(config('change-logger.table'));
     }
 }

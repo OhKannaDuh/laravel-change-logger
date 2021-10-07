@@ -21,9 +21,17 @@ final class ChangeLoggerServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
+            if (config('change-logger.migrate')) {
+                $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+            }
+
             $this->publishes([
                 self::CONFIG_PATH => config_path('change-logger.php'),
             ], 'config');
+
+            $this->publishes([
+                __DIR__ . '/../../database/migrations' => database_path('migrations'),
+            ], 'migrations');
         }
     }
 }

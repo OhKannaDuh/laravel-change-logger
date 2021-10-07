@@ -66,10 +66,6 @@ abstract class BaseChangeLogger implements ChangeLoggerInterface
             ];
         }
 
-        // foreach ($this->without as $attribute) {
-        //     unset($changedAttributes[$attribute]);
-        // }
-
         return $changedAttributes;
     }
 
