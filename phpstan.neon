@@ -1,0 +1,15 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - src
+
+    # The level 8 is the highest level
+    level: 5
+
+    checkMissingIterableValueType: false
+
+    ignoreErrors:
+        - '/Parameter #1 \$message of static method Illuminate\\Log\\Logger::info\(\) expects string, array<string, array\|string> given./'
