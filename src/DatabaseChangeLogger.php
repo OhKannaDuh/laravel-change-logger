@@ -20,6 +20,7 @@ final class DatabaseChangeLogger extends BaseChangeLogger
 
         ChangeLog::create([
             'model' => get_class($model),
+            'foreign_id' => $model->getKey(),
             'original' => $model->getOriginal(),
             'changes' => $changedAttributes,
         ]);

@@ -2,9 +2,11 @@
 
 namespace OhKannaDuh\ChangeLogger\Models\Behaviours;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use OhKannaDuh\ChangeLogger\ChangeLoggerInterface;
+use OhKannaDuh\ChangeLogger\Models\ChangeLog;
 
 trait LogsChanges
 {
@@ -23,6 +25,17 @@ trait LogsChanges
                 ->obfuscate($obfuscatedAttributes)
                 ->log($model, $observedAttributes);
         });
+    }
+
+    /**
+     * @return Collection<ChangeLog>
+     */
+    public function getChangeLog(): Collection
+    {
+        /** @var Model $this */
+        return ChangeLog::where('model', get_class($this))
+            ->where('foreign_id', $this->getKey())
+            ->get();
     }
 
     /**

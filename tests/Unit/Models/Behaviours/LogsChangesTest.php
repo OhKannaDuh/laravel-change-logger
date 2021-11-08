@@ -16,7 +16,7 @@ use Tests\Models\SpyWithoutAnythingToLog;
 use Tests\Models\SpyWithoutNameLog;
 use Tests\TestCase;
 
-final class LogsChangesvTest extends TestCase
+final class LogsChangesTest extends TestCase
 {
     use InteractsWithTime;
     use TracksQueries;
@@ -241,14 +241,86 @@ final class LogsChangesvTest extends TestCase
         $model->update($modified);
 
         $query = 'insert into "model_change_log" ' .
-            '("model", "original", "changes", "updated_at", "created_at") ' .
-            'values (?, ?, ?, ?, ?)';
+            '("model", "foreign_id", "original", "changes", "updated_at", "created_at") ' .
+            'values (?, ?, ?, ?, ?, ?)';
         $this->assertQueryExists($query, [
             get_class($model),
+            $model->getKey(),
             json_encode($original),
             json_encode($changedAttributes),
             '2020-10-17 12:00:00',
             '2020-10-17 12:00:00',
         ]);
+    }
+
+    /**
+     * Ensure we have the correct amount of updates.
+     */
+    public function testGetChangeLog(): void
+    {
+        $model = SpyWithDatabaseObserver::create([
+            'name' => 'Mario Mario',
+            'alias' => 'Mario',
+            'missions_complete' => 1,
+            'active' => false,
+        ]);
+
+        $model->update([
+            'active' => true,
+        ]);
+
+        $model->update([
+            'missions_complete' => 2,
+        ]);
+
+        $model->update([
+            'missions_complete' => 3,
+        ]);
+
+        $this->assertCount(3, $model->getChangeLog());
+    }
+
+    /**
+     * Ensure we don't get updates from other models.
+     */
+    public function testGetChangeLogIntegrity(): void
+    {
+        $mario = SpyWithDatabaseObserver::create([
+            'name' => 'Mario Mario',
+            'alias' => 'Mario',
+            'missions_complete' => 1,
+            'active' => false,
+        ]);
+
+        $luigi = SpyWithDatabaseObserver::create([
+            'name' => 'Luigi Mario',
+            'alias' => 'Luigi',
+            'missions_complete' => 1,
+            'active' => true,
+        ]);
+
+        $luigi->update([
+            'missions_complete' => 12,
+        ]);
+
+        $luigi->update([
+            'active' => false,
+        ]);
+
+
+        $mario->update([
+            'active' => true,
+        ]);
+
+        $mario->update([
+            'missions_complete' => 2,
+        ]);
+
+        $mario->update([
+            'missions_complete' => 3,
+        ]);
+
+        $this->assertCount(2, $luigi->getChangeLog());
+        $this->assertCount(3, $mario->getChangeLog());
     }
 }
