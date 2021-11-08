@@ -27,6 +27,9 @@ trait LogsChanges
         });
     }
 
+    /**
+     * @return Collection<ChangeLog>
+     */
     public function getChangeLog(): Collection
     {
         /** @var Model $this */
