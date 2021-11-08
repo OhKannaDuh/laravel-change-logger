@@ -9,6 +9,7 @@ final class ChangeLog extends Model
     /** @inheritDoc */
     protected $fillable = [
         'model',
+        'foreign_id',
         'original',
         'changes',
     ];
