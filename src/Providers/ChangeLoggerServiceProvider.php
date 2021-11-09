@@ -22,7 +22,7 @@ final class ChangeLoggerServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             if (config('change-logger.migrate')) {
-                $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+                $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
             }
 
             $this->publishes([
