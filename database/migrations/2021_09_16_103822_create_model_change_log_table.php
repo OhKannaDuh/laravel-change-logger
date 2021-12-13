@@ -17,7 +17,7 @@ final class CreateModelChangeLogTable extends Migration
         Schema::create(config('change-logger.table'), function (Blueprint $table) {
             $table->id();
             $table->string('model')->index();
-            $table->unsignedBigInteger('foreign_id');
+            $table->string('foreign_id');
             $table->json('original');
             $table->json('changes');
             $table->timestamps();
